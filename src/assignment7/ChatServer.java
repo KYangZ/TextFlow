@@ -7,10 +7,16 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Observable;
 
+import java.util.ArrayList;
+
 public class ChatServer extends Observable {
+
+	public static ArrayList<ChatClient> users = new ArrayList<ChatClient>();
+
 	public static void main(String[] args) {
 		try {
-			new ChatServer().setUpNetworking();
+			ChatServer c = new ChatServer();
+			c.setUpNetworking();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
