@@ -37,12 +37,11 @@ public class ChatClient {
 		frame.getContentPane().add(BorderLayout.CENTER, mainPanel);
 		frame.setSize(650, 500);
 		frame.setVisible(true);
-
 	}
 
 	private void setUpNetworking() throws Exception {
 		@SuppressWarnings("resource")
-		Socket sock = new Socket("128.62.61.202", 4242);
+		Socket sock = new Socket("10.147.220.148", 4242); // 128.62.61.202
 		InputStreamReader streamReader = new InputStreamReader(sock.getInputStream());
 		reader = new BufferedReader(streamReader);
 		writer = new PrintWriter(sock.getOutputStream());
