@@ -11,7 +11,8 @@ public class ChatClient {
 	private JTextField outgoing;
 	private BufferedReader reader;
 	private PrintWriter writer;
-	
+
+	private String user;
 
 	public void run() throws Exception {
 		initView();
@@ -42,7 +43,7 @@ public class ChatClient {
 
 	private void setUpNetworking() throws Exception {
 		@SuppressWarnings("resource")
-		Socket sock = new Socket("128.62.61.202", 4242);
+		Socket sock = new Socket("10.147.220.148", 4242);
 		InputStreamReader streamReader = new InputStreamReader(sock.getInputStream());
 		reader = new BufferedReader(streamReader);
 		writer = new PrintWriter(sock.getOutputStream());
@@ -62,7 +63,11 @@ public class ChatClient {
 
 	public static void main(String[] args) {
 		try {
-			new ChatClient().run();
+			ChatClient c = new ChatClient();
+			ChatServer.users.add(c);
+			c.run();
+			c.writer.println("A user has joined the chat");
+			c.writer.flush();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -73,7 +78,6 @@ public class ChatClient {
 			String message;
 			try {
 				while ((message = reader.readLine()) != null) {
-					
 						incoming.append(message + "\n");
 				}
 			} catch (IOException ex) {
