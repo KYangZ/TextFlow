@@ -10,7 +10,7 @@ public class ChatClient {
 	private JTextArea incoming;
 	private JTextField outgoing;
 	private BufferedReader reader;
-	private PrintWriter writer;
+	public PrintWriter writer;
 
 	private String user;
 
