@@ -30,6 +30,7 @@ public class HomeScreenController {
     @FXML
     private Button send_broadcast_button;
 
+    
     @FXML
     void send_broadcast(ActionEvent event) {
         c.writer.println(Main.username + ": " + broadcast_textfield.getText());
