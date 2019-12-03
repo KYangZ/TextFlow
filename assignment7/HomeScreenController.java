@@ -1,31 +1,27 @@
 package assignment7;
 
-import javafx.collections.ObservableList;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.TextFlow;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class HomeScreenController {
-
-    public ChatClient c;
-
-    @FXML
-    public void initialize(){
-        welcome_msg.setText(Main.username + "!");
-        welcome_info.setText("Server IP: " + Main.ip + " Welcome to the Lobby! To log out, close this window.");
-        scrollpane.vvalueProperty().bind(broadcast_window.heightProperty());
-    }
+    public ClientMain c;
 
     @FXML
-    private Label welcome_msg;
+    public Label welcome_msg;
 
     @FXML
-    private Label welcome_info;
+    public Label welcome_info;
 
     @FXML
     public TextFlow broadcast_window;
@@ -37,27 +33,23 @@ public class HomeScreenController {
     private Button send_broadcast_button;
 
     @FXML
-    private ScrollPane scrollpane;
-    
-    private ObservableList<String> users;
-    
-    @FXML
-    void checkEnterPressed(KeyEvent event) {
-    	if (event.getCode() == KeyCode.ENTER) {
-    		c.writer.println(Main.username + ": " + broadcast_textfield.getText());
-            c.writer.flush();
-            broadcast_textfield.setText("");
-            broadcast_textfield.requestFocus();
-			event.consume();
-		}
-    }
+    public ScrollPane scrollpane;
 
+    @FXML
+    private TextField start_chat_box;
+
+    @FXML
+    private Button chat_button;
 
     @FXML
     void send_broadcast(ActionEvent event) {
         if (!broadcast_textfield.getText().equals("")) {
-            c.writer.println(Main.username + ":  " + broadcast_textfield.getText());
-            c.writer.flush();
+            try {
+                ClientMain.toServer.writeObject(broadcast_textfield.getText() + "\n");
+                ClientMain.toServer.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             broadcast_textfield.setText("");
             broadcast_textfield.requestFocus();
         }
@@ -66,5 +58,33 @@ public class HomeScreenController {
     @FXML
     public void onEnter(ActionEvent actionEvent) {
         send_broadcast(actionEvent);
+    }
+
+    @FXML
+    void start_chat(ActionEvent event) {
+        String partner = start_chat_box.getText();
+        if (partner.equals("") || partner.equals(c.username)) {
+            System.out.println("invalid partner");
+        } else {
+            try {
+                //TODO: check if the user is online!
+
+                // prepare a new scene
+                FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("assignment7/ChatScreen.fxml"));
+                Parent root = loader.load();
+                ChatController controller = loader.getController();
+                Scene scene = new Scene(root);
+                Stage stage = new Stage();
+                stage.setScene(scene);
+                stage.show();
+
+                // TODO: connect the user with the other person via clients and observers
+
+            } catch (Exception e) {
+                // tell the user the other person is offline
+                e.printStackTrace();
+            }
+
+        }
     }
 }

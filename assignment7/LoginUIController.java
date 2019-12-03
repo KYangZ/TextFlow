@@ -1,37 +1,16 @@
 package assignment7;
 
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.Region;
-import javafx.scene.paint.Color;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
-import java.net.ConnectException;
 
-import javax.print.DocFlavor.URL;
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.*;
-import java.nio.file.Paths;
-import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.*;
-import javafx.stage.Stage;
-import sun.misc.*;
 
 public class LoginUIController {
+    public ClientMain c;
 
     @FXML
     private PasswordField password_field;
@@ -56,33 +35,54 @@ public class LoginUIController {
         ip_field.setDisable(true);
 
         // Platform.runLater(() -> login_button.setText("Loading..."));
-        Main.username = username_field.getText();
-        Main.password = password_field.getText();
-        Main.ip = ip_field.getText();
+        String username = username_field.getText();
+        String password = password_field.getText();
+        String ip = ip_field.getText();
 
-        ChatClient c = null;
         try {
-            c = new ChatClient(Main.username, Main.password, Main.ip);
-            ChatServer.users.add(c);
-            
-            //ChatServer.userNames.add(Main.username);
+            if (username.equals("")) {
+                throw new Exception();
+            }
+
+            if (ServerMain.online.contains(username)) {
+                throw new Exception();
+            }
+
+            c.setUpNetworking(ip);
+            c.username = username;
+            c.ip = ip;
+
+            /*
+            if (ClientMain.online.contains(username)) {
+                throw new Exception();
+            } else {
+                ClientMain.online.add(username);
+                for (String s : ClientMain.online) {
+                    System.out.println(s);
+                }
+            }
+             */
+
             // prepare the new scene
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("assignment7/HomeScreen.fxml"));
             Parent root = loader.load();
             HomeScreenController controller = loader.getController();
+            controller.c = c;
+            c.incoming_broadcast = controller.broadcast_window;
+
+            // PERSONALIZATION of UI
+            controller.welcome_msg.setText(c.username + "!");
+            controller.welcome_info.setText("Server IP: " + c.ip + " Welcome to the Lobby! To log out, close this window.");
+            controller.scrollpane.vvalueProperty().bind(controller.broadcast_window.heightProperty());
+
             // Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("assignment7/HomeScreen.fxml"));
             Stage s = (Stage)login_button.getScene().getWindow();
             Scene scene = new Scene(root);
             s.setScene(scene);
 
-            controller.c = c;
-            c.incoming_broadcast = controller.broadcast_window;
-
-            /*
-            c.user_color = Color.GOLDENROD;
-            c.writer.println(Main.username + " has joined the chat");
-            c.writer.flush();
-             */
+            // System.out.println("new_user#" + c.username + " has joined the chat!\n");
+            ClientMain.toServer.writeObject("new_user#" + c.username + " has joined the chat!");
+            ClientMain.toServer.flush();
         } catch (Exception e) {
             failure_msg.setVisible(true);
             username_field.clear();
