@@ -2,21 +2,20 @@ package assignment7;
 
 import java.io.*;
 import java.net.*;
+
+import javafx.application.Platform;
 import javafx.scene.control.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 
 public class ChatClient {
 
-	DataOutputStream toServer = null;
-	DataInputStream fromServer = null;
-
-	public TextArea incoming_broadcast;
-
-	// private JTextArea incoming;
-	// private JTextField outgoing;
+	public TextFlow incoming_broadcast;
 	public BufferedReader reader;
 	public PrintWriter writer;
-
-	private String user;
+	public Color user_color = Color.WHITE;
 
 	public ChatClient(String username, String password, String ip) throws Exception {
 		setUpNetworking(ip);
@@ -27,7 +26,6 @@ public class ChatClient {
 		// initView();
 		setUpNetworking(ip);
 	}
-
 	 */
 
 	/*
@@ -51,7 +49,6 @@ public class ChatClient {
 		frame.setSize(650, 500);
 		frame.setVisible(true);
 	}
-
 	 */
 
 	private void setUpNetworking(String ip) throws Exception {
@@ -101,7 +98,13 @@ public class ChatClient {
 			String message;
 			try {
 				while ((message = reader.readLine()) != null) {
-						incoming_broadcast.appendText(message + "\n");
+					String finalMessage = message;
+					Platform.runLater(() -> {
+						Text t = new Text(finalMessage + "\n");
+						t.setFont(Font.font("System", 16));
+						t.setFill(user_color);
+						incoming_broadcast.getChildren().add(t);
+					});
 				}
 			} catch (IOException ex) {
 				ex.printStackTrace();
