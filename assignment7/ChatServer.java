@@ -7,12 +7,17 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Observable;
 
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import java.util.ArrayList;
 
 public class ChatServer extends Observable {
 
+	public static ObservableList<String> userNames;
 	public static ArrayList<ChatClient> users = new ArrayList<ChatClient>();
-
+	
 	public static void main(String[] args) {
 		try {
 			ChatServer c = new ChatServer();
@@ -25,6 +30,7 @@ public class ChatServer extends Observable {
 	private void setUpNetworking() throws Exception {
 		@SuppressWarnings("resource")
 		ServerSocket serverSock = new ServerSocket(4242);
+		userNames = FXCollections.observableArrayList();
 		while (true) {
 			Socket clientSocket = serverSock.accept();
 			ClientObserver writer = new ClientObserver(clientSocket.getOutputStream());
@@ -34,6 +40,20 @@ public class ChatServer extends Observable {
 			System.out.println("got a connection");
 		}
 	}
+	
+	public void addUser(String user) {
+		Platform.runLater(() -> {
+			userNames.add(user);
+		});
+	}
+	
+	public void remove(String user) {
+		Platform.runLater(() -> {
+			userNames.remove(user);
+		});
+	}
+	
+	
 	class ClientHandler implements Runnable {
 		private BufferedReader reader;
 

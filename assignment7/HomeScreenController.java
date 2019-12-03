@@ -1,8 +1,11 @@
 package assignment7;
 
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 
 public class HomeScreenController {
 
@@ -30,6 +33,18 @@ public class HomeScreenController {
     @FXML
     private Button send_broadcast_button;
 
+    private ObservableList<String> users;
+    
+    @FXML
+    void checkEnterPressed(KeyEvent event) {
+    	if (event.getCode() == KeyCode.ENTER) {
+    		c.writer.println(Main.username + ": " + broadcast_textfield.getText());
+            c.writer.flush();
+            broadcast_textfield.setText("");
+            broadcast_textfield.requestFocus();
+			event.consume();
+		}
+    }
     
     @FXML
     void send_broadcast(ActionEvent event) {

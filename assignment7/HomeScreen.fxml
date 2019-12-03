@@ -51,7 +51,7 @@
                   <TextArea fx:id="broadcast_window" editable="false" prefHeight="534.0" prefWidth="516.0" style="-fx-background-color: transparent;" VBox.vgrow="ALWAYS" />
                   <HBox spacing="5.0">
                      <children>
-                        <TextField fx:id="broadcast_textfield" prefHeight="27.0" prefWidth="459.0" style="-fx-control-inner-background:#292d3e; -fx-text-fill: white;" HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="broadcast_textfield" onKeyPressed="#checkEnterPressed" prefHeight="27.0" prefWidth="459.0" style="-fx-control-inner-background:#292d3e; -fx-text-fill: white;" HBox.hgrow="ALWAYS" />
                         <Button fx:id="send_broadcast_button" mnemonicParsing="false" onAction="#send_broadcast" style="-fx-background-color: #82aaff;" text="Send" textFill="WHITE" />
                      </children>
                      <VBox.margin>
