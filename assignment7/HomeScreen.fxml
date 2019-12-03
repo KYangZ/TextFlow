@@ -52,8 +52,6 @@
                <children>
                   <VBox fx:id="middle_anchor" fillWidth="false" prefHeight="600.0" prefWidth="569.0">
                      <children>
-                        <TextField fx:id="broadcast_textfield" onKeyPressed="#checkEnterPressed" prefHeight="27.0" prefWidth="459.0" style="-fx-control-inner-background:#292d3e; -fx-text-fill: white;" />
-                        <Button fx:id="send_broadcast_button" mnemonicParsing="false" onAction="#send_broadcast" style="-fx-background-color: #82aaff;" text="Send" textFill="WHITE" />
                         <Label alignment="CENTER" prefHeight="29.0" prefWidth="564.0" text="Broadcast Channel" textFill="WHITE" VBox.vgrow="ALWAYS">
                            <font>
                               <Font size="24.0" />
