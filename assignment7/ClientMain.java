@@ -96,6 +96,12 @@ public class ClientMain extends Application {
 						toServer.writeObject("add_user#" + username + "\n");
 						toServer.flush();
 
+						/*
+						for (String s : ServerMain.online) {
+							System.out.println(s);
+						}
+						 */
+
 						Platform.runLater(() -> {
 							user_color = Color.GOLDENROD;
 							Text t = new Text(finalMessage.split("#")[1] + "\n");

@@ -44,9 +44,11 @@ public class LoginUIController {
                 throw new Exception();
             }
 
+            /*
             if (ServerMain.online.contains(username)) {
                 throw new Exception();
             }
+             */
 
             c.setUpNetworking(ip);
             c.username = username;

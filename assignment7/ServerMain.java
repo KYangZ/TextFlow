@@ -14,9 +14,9 @@ public class ServerMain extends Observable {
 	// public volatile static ObservableList<ChatClient> users = FXCollections.observableArrayList();
 	// public volatile static ObservableList<String> usernames = FXCollections.observableArrayList();
 
-	public static ArrayList<String> online = new ArrayList<String>();
-
-	// HashMap<String, ClientHandler> online = new HashMap<String, ClientHandler>();
+	// public static ArrayList<String> online = new ArrayList<String>();
+	HashMap<String, ClientHandler> online = new HashMap<String, ClientHandler>();
+	ArrayList<ChatRoom> chats = new ArrayList<ChatRoom>();
 
 	public ArrayList<Observable> users;
 	public ArrayList<String> usernames;
@@ -80,7 +80,6 @@ public class ServerMain extends Observable {
 		Socket socket;
 		ObjectInputStream input;
 
-
 		public ClientHandler(ObjectInputStream serverInput, ClientObserver observer) {
 			this.serverInput = serverInput;
 			this.observer = observer;
@@ -92,7 +91,16 @@ public class ServerMain extends Observable {
 				while ((message = (String)serverInput.readObject()) != null) {
 					if (message.startsWith("add_user#")) {
 						String u = message.split("#")[1];
-						online.add(u);
+						online.put(u, this);
+					} else if (message.startsWith("new_chat#")) {
+						String receive_list = message.split("#")[1];
+						String[] receivers = receive_list.split(" ");
+						ArrayList<ClientObserver> ppl = new ArrayList<ClientObserver>();
+						for (String s : receivers) {
+							ppl.add(online.get(s).observer);
+						}
+						ChatRoom chat_room = new ChatRoom(ppl);
+						chats.add(chat_room);
 					} else {
 						setChanged();
 						notifyObservers(message);

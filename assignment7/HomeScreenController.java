@@ -63,6 +63,7 @@ public class HomeScreenController {
     @FXML
     void start_chat(ActionEvent event) {
         String partner = start_chat_box.getText();
+
         if (partner.equals("") || partner.equals(c.username)) {
             System.out.println("invalid partner");
         } else {
@@ -78,8 +79,8 @@ public class HomeScreenController {
                 stage.setScene(scene);
                 stage.show();
 
-                // TODO: connect the user with the other person via clients and observers
-
+                ClientMain.toServer.writeObject("new_chat#" + c.username + " " + partner);
+                ClientMain.toServer.flush();
             } catch (Exception e) {
                 // tell the user the other person is offline
                 e.printStackTrace();
