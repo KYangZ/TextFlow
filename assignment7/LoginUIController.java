@@ -64,7 +64,8 @@ public class LoginUIController {
         try {
             c = new ChatClient(Main.username, Main.password, Main.ip);
             ChatServer.users.add(c);
-            ChatServer.userNames.add(Main.username);
+            
+            //ChatServer.userNames.add(Main.username);
             // prepare the new scene
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("assignment7/HomeScreen.fxml"));
             Parent root = loader.load();
