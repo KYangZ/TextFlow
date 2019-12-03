@@ -30,7 +30,7 @@ public class ChatServer extends Observable {
 	private void setUpNetworking() throws Exception {
 		@SuppressWarnings("resource")
 		ServerSocket serverSock = new ServerSocket(4242);
-		userNames = FXCollections.observableArrayList();
+		//userNames = FXCollections.observableArrayList();
 		while (true) {
 			Socket clientSocket = serverSock.accept();
 			ClientObserver writer = new ClientObserver(clientSocket.getOutputStream());
@@ -40,7 +40,7 @@ public class ChatServer extends Observable {
 			System.out.println("got a connection");
 		}
 	}
-	
+	/*
 	public void addUser(String user) {
 		Platform.runLater(() -> {
 			userNames.add(user);
@@ -53,7 +53,7 @@ public class ChatServer extends Observable {
 		});
 	}
 	
-	
+	*/
 	class ClientHandler implements Runnable {
 		private BufferedReader reader;
 
