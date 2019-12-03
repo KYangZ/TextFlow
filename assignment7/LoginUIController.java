@@ -75,6 +75,12 @@ public class LoginUIController {
 
             controller.c = c;
             c.incoming_broadcast = controller.broadcast_window;
+
+            /*
+            c.user_color = Color.GOLDENROD;
+            c.writer.println(Main.username + " has joined the chat");
+            c.writer.flush();
+             */
         } catch (Exception e) {
             failure_msg.setVisible(true);
             username_field.clear();

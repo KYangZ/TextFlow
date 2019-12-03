@@ -4,77 +4,104 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.effect.Reflection?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Polygon?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.TextFlow?>
 
-<AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="600.0" prefWidth="950.0" style="-fx-background-color: #121212;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="600.0" prefWidth="950.0" style="-fx-background-color: #121212;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="assignment7.HomeScreenController">
    <children>
       <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <left>
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="180.0" style="-fx-background-color: #121212;" BorderPane.alignment="CENTER">
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="600.0" prefWidth="207.0" style="-fx-background-color: #121212;" BorderPane.alignment="CENTER">
                <children>
-                  <Polygon fill="DODGERBLUE" layoutX="210.0" layoutY="397.0" points="-120.28277587890625, 167.55624389648438, -69.70318603515625, 167.55621337890625, -2.616668701171875, 9.1728515625" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" style="-fx-fill: #82aaff;">
+                  <Polygon fill="DODGERBLUE" layoutX="199.0" layoutY="395.0" points="-120.28277587890625, 167.55624389648438, -69.70318603515625, 167.55621337890625, -2.616668701171875, 9.1728515625" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" style="-fx-fill: #82aaff;" AnchorPane.bottomAnchor="37.443756103515625" AnchorPane.leftAnchor="78.71722412109375" AnchorPane.rightAnchor="10.616668701171875" AnchorPane.topAnchor="404.1728515625">
                      <effect>
                         <Reflection />
                      </effect>
                   </Polygon>
-                  <Polygon fill="DODGERBLUE" layoutX="143.0" layoutY="397.0" points="-120.28277587890625, 167.55624389648438, -77.22288513183594, 167.55621337890625, 21.554229736328125, 52.1885986328125" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" style="-fx-fill: #6efa6f;">
+                  <Polygon fill="DODGERBLUE" layoutX="133.0" layoutY="396.0" points="-120.28277587890625, 167.55624389648438, -77.22288513183594, 167.55621337890625, 21.554229736328125, 52.1885986328125" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" style="-fx-fill: #6efa6f;" AnchorPane.bottomAnchor="36.443756103515625" AnchorPane.leftAnchor="12.554229736328125" AnchorPane.rightAnchor="52.445770263671875" AnchorPane.topAnchor="447.5562438964844">
                      <effect>
                         <Reflection />
                      </effect>
                   </Polygon>
-                  <Label fx:id="welcome_msg" alignment="CENTER" layoutX="12.0" layoutY="51.0" text="User!" textFill="WHITE">
+                  <Label fx:id="welcome_msg" alignment="CENTER" layoutX="15.0" layoutY="51.0" text="User!" textFill="WHITE">
                      <font>
                         <Font size="24.0" />
                      </font>
                   </Label>
-                  <Label layoutX="8.0" layoutY="8.0" text="Welcome," textFill="WHITE">
+                  <Label layoutX="14.0" layoutY="9.0" text="Welcome," textFill="WHITE">
                      <font>
                         <Font size="36.0" />
                      </font>
                   </Label>
-                  <Label fx:id="welcome_info" layoutX="11.0" layoutY="417.0" text="IP Address:" textFill="WHITE" />
                </children>
             </AnchorPane>
          </left>
          <center>
-            <VBox BorderPane.alignment="CENTER">
+            <AnchorPane prefHeight="550.0" prefWidth="570.0" BorderPane.alignment="CENTER">
                <children>
-                  <TextArea fx:id="broadcast_window" editable="false" prefHeight="534.0" prefWidth="516.0" style="-fx-background-color: transparent;" VBox.vgrow="ALWAYS" />
-                  <HBox spacing="5.0">
+                  <VBox fx:id="middle_anchor" fillWidth="false" prefHeight="600.0" prefWidth="569.0">
                      <children>
-                        <TextField fx:id="broadcast_textfield" prefHeight="27.0" prefWidth="459.0" style="-fx-control-inner-background:#292d3e; -fx-text-fill: white;" HBox.hgrow="ALWAYS" />
-                        <Button fx:id="send_broadcast_button" mnemonicParsing="false" onAction="#send_broadcast" style="-fx-background-color: #82aaff;" text="Send" textFill="WHITE" />
+                        <Label alignment="CENTER" prefHeight="29.0" prefWidth="564.0" text="Broadcast Channel" textFill="WHITE" VBox.vgrow="ALWAYS">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets bottom="10.0" />
+                           </VBox.margin>
+                        </Label>
+                        <ScrollPane fx:id="scrollpane" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" style="-fx-background-color: transparent; -fx-border-color: #292d3e; -fx-border-width: 3;">
+                           <VBox.margin>
+                              <Insets bottom="10.0" />
+                           </VBox.margin>
+                           <content>
+                              <TextFlow fx:id="broadcast_window" lineSpacing="5.0" prefHeight="477.0" prefWidth="521.0" style="-fx-background-color: #121212;" />
+                           </content>
+                        </ScrollPane>
+                        <GridPane prefHeight="30.0" prefWidth="519.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="441.0" minWidth="10.0" prefWidth="429.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="97.8045654296875" minWidth="0.0" prefWidth="90.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <TextField fx:id="broadcast_textfield" maxHeight="-Infinity" maxWidth="-Infinity" onAction="#onEnter" prefHeight="27.0" prefWidth="460.0" style="-fx-background-color: #292d3e; -fx-text-fill: white;" GridPane.hgrow="ALWAYS">
+                                 <GridPane.margin>
+                                    <Insets right="5.0" />
+                                 </GridPane.margin>
+                              </TextField>
+                            <Button fx:id="send_broadcast_button" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#send_broadcast" prefHeight="29.0" prefWidth="99.0" style="-fx-background-color: #82aaff;" text="Send" textFill="WHITE" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
+                           </children>
+                        </GridPane>
+                        <Label fx:id="welcome_info" text="IP Address:" textFill="WHITE">
+                           <VBox.margin>
+                              <Insets top="5.0" />
+                           </VBox.margin>
+                        </Label>
                      </children>
-                     <VBox.margin>
-                        <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
-                     </VBox.margin>
                      <padding>
-                        <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+                        <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
                      </padding>
-                  </HBox>
+                  </VBox>
                </children>
-            </VBox>
+            </AnchorPane>
          </center>
-         <top>
-            <Label alignment="CENTER" text="Broadcast Channel" textFill="WHITE" BorderPane.alignment="CENTER">
-               <font>
-                  <Font size="24.0" />
-               </font>
-            </Label>
-         </top>
          <right>
             <VBox prefWidth="200.0" BorderPane.alignment="CENTER">
                <children>
-                  <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="18.0" prefWidth="215.0" text="Users" textAlignment="CENTER" textFill="WHITE">
+                  <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="47.0" prefWidth="200.0" text="Users" textAlignment="CENTER" textFill="WHITE">
                      <font>
                         <Font size="21.0" />
                      </font>
