@@ -83,7 +83,7 @@ public class LoginUIController {
             s.setScene(scene);
 
             // System.out.println("new_user#" + c.username + " has joined the chat!\n");
-            ClientMain.toServer.writeObject("new_user#" + c.username + " has joined the chat!");
+            ClientMain.toServer.writeObject("new_user#" + c.username + "#" + c.username + " has joined the chat!");
             ClientMain.toServer.flush();
         } catch (Exception e) {
             failure_msg.setVisible(true);

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.Reflection?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Polygon?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="400.0" prefWidth="421.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="assignment7.LoginUIController">
+  <children>
+    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" style="-fx-background-color: #121212;" VBox.vgrow="ALWAYS">
+         <children>
+            <Polygon fill="DODGERBLUE" layoutX="406.0" layoutY="181.0" points="-120.28277587890625, 167.55624389648438, -81.3904800415039, 167.55625915527344, 5.006866455078125, -22.476181030273438" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" style="-fx-fill: #82aaff;">
+               <effect>
+                  <Reflection />
+               </effect>
+            </Polygon>
+            <Polygon fill="DODGERBLUE" layoutX="354.0" layoutY="181.0" points="-120.28277587890625, 167.55624389648438, -88.44534301757812, 167.55624389648438, 25.18109130859375, 3.3177490234375" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" style="-fx-fill: #6efa6f;">
+               <effect>
+                  <Reflection />
+               </effect>
+            </Polygon>
+            <PasswordField id="password_field" fx:id="password_field" layoutX="128.0" layoutY="184.0" promptText="Password" style="-fx-background-color: #292d3e; -fx-text-fill: white;" />
+            <TextField id="username_field" fx:id="username_field" layoutX="128.0" layoutY="148.0" promptText="Username" style="-fx-background-color: #292d3e; -fx-text-fill: white;" />
+            <TextField id="ip_field" fx:id="ip_field" layoutX="128.0" layoutY="220.0" promptText="Server IP Address" style="-fx-background-color: #292d3e; -fx-text-fill: white;" />
+            <Button id="login_button" fx:id="login_button" layoutX="181.0" layoutY="258.0" mnemonicParsing="false" onAction="#login_action" style="-fx-background-color: #5C6BC0;" text="Login" textFill="WHITE" />
+            <Label layoutX="110.0" layoutY="95.0" text="Chat Room V1" textFill="WHITE">
+               <font>
+                  <Font size="33.0" />
+               </font></Label>
+            <Label fx:id="failure_msg" layoutX="158.0" layoutY="293.0" text="Failed to connect" textFill="RED" visible="false" />
+         </children>
+    </AnchorPane>
+  </children>
+</VBox>

@@ -3,9 +3,7 @@ package assignment7;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Observable;
+import java.util.*;
 
 import javafx.application.Platform;
 
@@ -15,8 +13,12 @@ public class ServerMain extends Observable {
 	// public volatile static ObservableList<String> usernames = FXCollections.observableArrayList();
 
 	// public static ArrayList<String> online = new ArrayList<String>();
-	HashMap<String, ClientHandler> online = new HashMap<String, ClientHandler>();
-	ArrayList<ChatRoom> chats = new ArrayList<ChatRoom>();
+	//Hashtable<String, ClientHandler> online = new Hashtable<>();
+	Hashtable<String, ClientObserver> online = new Hashtable<>();
+	// ArrayList<ChatRoom> chats = new ArrayList<ChatRoom>();
+	Hashtable<String, ChatRoom> chats = new Hashtable<>();
+
+	final Object lock1 = new Object();
 
 	public ArrayList<Observable> users;
 	public ArrayList<String> usernames;
@@ -54,14 +56,6 @@ public class ServerMain extends Observable {
 
 		}
 	}
-
-	/*
-	public boolean addUser(ChatClient user) {
-		users.add(user);
-		usernames.add(user.username);
-	}
-
-	 */
 	
 	public void remove(ClientMain user) {
 		Platform.runLater(() -> {
@@ -89,23 +83,56 @@ public class ServerMain extends Observable {
 			String message;
 			try {
 				while ((message = (String)serverInput.readObject()) != null) {
-					if (message.startsWith("add_user#")) {
-						String u = message.split("#")[1];
-						online.put(u, this);
-					} else if (message.startsWith("new_chat#")) {
-						String receive_list = message.split("#")[1];
-						String[] receivers = receive_list.split(" ");
-						ArrayList<ClientObserver> ppl = new ArrayList<ClientObserver>();
-						for (String s : receivers) {
-							ppl.add(online.get(s).observer);
-						}
-						ChatRoom chat_room = new ChatRoom(ppl);
-						chats.add(chat_room);
-					} else {
-						setChanged();
-						notifyObservers(message);
-					}
 					System.out.println("server read " + message);
+
+					if (message.startsWith("new_user#")) {
+						synchronized (lock1) {
+							String u = message.split("#")[1];
+							online.put(u, observer);
+						}
+					} else if (message.startsWith("new_chat#")) {
+						// System.out.println(message);
+						synchronized (lock1) {
+							String receive_list = message.split("#")[1];
+							String[] receivers = receive_list.split(" ");
+							ArrayList<ClientObserver> ppl = new ArrayList<ClientObserver>();
+							List<String> r = Arrays.asList(receivers);
+							Collections.sort(r);
+							String room_name = "";
+							for (String s : r) {
+								room_name += s;
+							}
+
+							int i = 0;
+							for (String s : receivers) {
+								System.out.println(s);
+								if (i == 0) {
+									ppl.add(this.observer);
+									System.out.println(this.observer);
+								} else {
+									System.out.println(online);
+									System.out.println(online.get(s));
+									ppl.add(online.get(s)); //ppl.add(online.get(s).observer);
+								}
+								i++;
+							}
+
+							ChatRoom chat_room = new ChatRoom(ppl, room_name);
+							chats.put(room_name, chat_room);
+							chat_room.initObservers(room_name);
+							// .out.println(chats);
+						}
+					} else if (message.startsWith("chatroom#")) {
+						synchronized (lock1) {
+							String id = message.split("#")[1];
+							chats.get(id).sendMessage(message.split("#")[2]);
+						}
+					} else if (message.startsWith("broadcast#")) {
+						synchronized (lock1) {
+							setChanged();
+							notifyObservers(message);
+						}
+					}
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

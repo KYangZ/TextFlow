@@ -13,6 +13,10 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class HomeScreenController {
     public ClientMain c;
@@ -45,7 +49,7 @@ public class HomeScreenController {
     void send_broadcast(ActionEvent event) {
         if (!broadcast_textfield.getText().equals("")) {
             try {
-                ClientMain.toServer.writeObject(broadcast_textfield.getText() + "\n");
+                ClientMain.toServer.writeObject("broadcast#" + c.username + "#" + broadcast_textfield.getText());
                 ClientMain.toServer.flush();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -60,6 +64,11 @@ public class HomeScreenController {
         send_broadcast(actionEvent);
     }
 
+    public void loadWindow() {
+
+    }
+
+
     @FXML
     void start_chat(ActionEvent event) {
         String partner = start_chat_box.getText();
@@ -70,16 +79,30 @@ public class HomeScreenController {
             try {
                 //TODO: check if the user is online!
 
+                /*
                 // prepare a new scene
                 FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("assignment7/ChatScreen.fxml"));
                 Parent root = loader.load();
                 ChatController controller = loader.getController();
+
+                //c.incoming_broadcast = controller.chat_window;
                 Scene scene = new Scene(root);
                 Stage stage = new Stage();
                 stage.setScene(scene);
                 stage.show();
 
-                ClientMain.toServer.writeObject("new_chat#" + c.username + " " + partner);
+                 */
+
+
+                List<String> r = new ArrayList<String>();
+                r.add(c.username);
+                r.add(partner);
+                Collections.sort(r);
+                String room_name = "";
+                for (String s : r) {
+                    room_name = room_name + s;
+                }
+                ClientMain.toServer.writeObject("new_chat#" + room_name);
                 ClientMain.toServer.flush();
             } catch (Exception e) {
                 // tell the user the other person is offline

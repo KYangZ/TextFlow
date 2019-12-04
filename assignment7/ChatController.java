@@ -11,7 +11,7 @@ import javafx.scene.text.TextFlow;
 import java.io.IOException;
 
 public class ChatController {
-    public ClientMain c;
+    public String chatName;
 
     @FXML
     private Label chat_title;
@@ -20,7 +20,7 @@ public class ChatController {
     private ScrollPane scrollpane;
 
     @FXML
-    private TextFlow chat_window;
+    public TextFlow chat_window;
 
     @FXML
     private TextField chat_textfield;
@@ -37,7 +37,7 @@ public class ChatController {
     void send_msg(ActionEvent event) {
         if (!chat_textfield.getText().equals("")) {
             try {
-                ClientMain.toServer.writeObject(chat_textfield.getText());
+                ClientMain.toServer.writeObject("chatroom#" + chatName + "#" + chat_textfield.getText());
                 ClientMain.toServer.flush();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -46,5 +46,7 @@ public class ChatController {
             chat_textfield.requestFocus();
         }
     }
+    
+    
 
 }

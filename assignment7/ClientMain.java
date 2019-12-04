@@ -3,6 +3,9 @@ package assignment7;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -93,32 +96,45 @@ public class ClientMain extends Application {
 
 					if (message.startsWith("new_user#")) {
 						// clients.add();
-						toServer.writeObject("add_user#" + username + "\n");
+						toServer.writeObject("add_user#" + finalMessage.split("#")[1]);
 						toServer.flush();
-
-						/*
-						for (String s : ServerMain.online) {
-							System.out.println(s);
-						}
-						 */
 
 						Platform.runLater(() -> {
 							user_color = Color.GOLDENROD;
-							Text t = new Text(finalMessage.split("#")[1] + "\n");
+							Text t = new Text(finalMessage);
 							t.setFont(Font.font("System", 16));
 							t.setFill(user_color);
 							incoming_broadcast.getChildren().add(t);
 							user_color = Color.CORNFLOWERBLUE;
 						});
-					} else {
+					} else if (message.startsWith("broadcast#")) {
 						Platform.runLater(() -> {
-							Text prefix = new Text(username + ":  ");
-							prefix.setFill(user_color);
+							Text prefix = new Text(finalMessage.split("#")[1] + ":  ");
+							prefix.setFill(Color.CORNFLOWERBLUE);
 							prefix.setFont(Font.font("System", 16));
-							Text t = new Text(finalMessage);
+							Text t = new Text(finalMessage.split("#")[2] + "\n");
 							t.setFont(Font.font("System", 16));
 							t.setFill(Color.WHITE);
 							incoming_broadcast.getChildren().add(prefix);
+							incoming_broadcast.getChildren().add(t);
+						});
+					} else if (message.startsWith("new_chat#")) {
+						String chatName = message.split("#")[1];
+						FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("assignment7/ChatScreen.fxml"));
+						Parent root = loader.load();
+						ChatController controller = loader.getController();
+						controller.chatName = chatName;
+						Platform.runLater(() -> {
+							Scene scene = new Scene(root);
+							Stage stage = new Stage();
+							stage.setScene(scene);
+							stage.show();
+						});
+					} else {
+						Platform.runLater(() -> {
+							Text t = new Text(finalMessage);
+							t.setFont(Font.font("System", 16));
+							t.setFill(Color.WHITE);
 							incoming_broadcast.getChildren().add(t);
 						});
 					}
