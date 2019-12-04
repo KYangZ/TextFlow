@@ -12,6 +12,7 @@ public class ChatRoom extends Observable {
     public ChatRoom(ArrayList<ClientObserver> people, String name) {
         for (ClientObserver obs : people) {
             this.addObserver(obs);
+            System.out.println("observer: " + obs);
         }
         this.name = name;
         setChanged();
