@@ -100,7 +100,7 @@ public class HomeScreenController {
                 Collections.sort(r);
                 String room_name = "";
                 for (String s : r) {
-                    room_name = room_name + s;
+                    room_name = room_name + s + " ";
                 }
                 ClientMain.toServer.writeObject("new_chat#" + room_name);
                 ClientMain.toServer.flush();

@@ -79,20 +79,17 @@ public class ServerMain extends Observable {
 			this.observer = observer;
 		}
 
-		public void run() {
+		public synchronized void run() {
 			String message;
 			try {
 				while ((message = (String)serverInput.readObject()) != null) {
 					System.out.println("server read " + message);
 
 					if (message.startsWith("new_user#")) {
-						synchronized (lock1) {
 							String u = message.split("#")[1];
-							online.put(u, observer);
-						}
+							online.put(u, this.observer);
 					} else if (message.startsWith("new_chat#")) {
 						// System.out.println(message);
-						synchronized (lock1) {
 							String receive_list = message.split("#")[1];
 							String[] receivers = receive_list.split(" ");
 							ArrayList<ClientObserver> ppl = new ArrayList<ClientObserver>();
@@ -101,13 +98,15 @@ public class ServerMain extends Observable {
 							String room_name = "";
 							for (String s : r) {
 								room_name += s;
+								room_name += " ";
 							}
 
 							int i = 0;
 							for (String s : receivers) {
 								System.out.println(s);
 								if (i == 0) {
-									ppl.add(this.observer);
+									//ppl.add(this.observer);
+									ppl.add(online.get(s));
 									System.out.println(this.observer);
 								} else {
 									System.out.println(online);
@@ -121,17 +120,16 @@ public class ServerMain extends Observable {
 							chats.put(room_name, chat_room);
 							chat_room.initObservers(room_name);
 							// .out.println(chats);
-						}
 					} else if (message.startsWith("chatroom#")) {
-						synchronized (lock1) {
+
 							String id = message.split("#")[1];
 							chats.get(id).sendMessage(message.split("#")[2]);
-						}
+	
 					} else if (message.startsWith("broadcast#")) {
-						synchronized (lock1) {
+			
 							setChanged();
 							notifyObservers(message);
-						}
+		
 					}
 				}
 			} catch (Exception e) {
