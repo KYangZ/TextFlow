@@ -1,3 +1,15 @@
+/*
+ * EE422C Project 7 submission by
+ * <Student1 Name> Kory Yang
+ * <Student1 EID> ky4794
+ * <Student1 5-digit Unique No.> 16185
+ * <Student2 Name> Sophia Jiang
+ * <Student2 EID> sj26792
+ * <Student2 5-digit Unique No.> 16185
+ * Slip days used: <1>
+ * Fall 2019
+ */
+
 package assignment7;
 
 import javafx.event.ActionEvent;
@@ -13,19 +25,19 @@ public class LoginUIController {
     public ClientMain c;
 
     @FXML
-    private PasswordField password_field;
+    public PasswordField password_field;
 
     @FXML
-    private TextField username_field;
+    public TextField username_field;
 
     @FXML
-    private TextField ip_field;
+    public TextField ip_field;
 
     @FXML
-    private Button login_button;
+    public Button login_button;
 
     @FXML
-    private Label failure_msg;
+    public Label failure_msg;
 
     @FXML
     void login_action(ActionEvent event) {
@@ -34,57 +46,31 @@ public class LoginUIController {
         password_field.setDisable(true);
         ip_field.setDisable(true);
 
-        // Platform.runLater(() -> login_button.setText("Loading..."));
         String username = username_field.getText();
         String password = password_field.getText();
         String ip = ip_field.getText();
 
         try {
             if (username.equals("")) {
+                failure_msg.setText("Please enter a username");
                 throw new Exception();
             }
 
-            /*
-            if (ServerMain.online.contains(username)) {
+            if (password.equals("")) {
+                failure_msg.setText("Please enter a password\nYou will be registered if it is your first time logging in");
                 throw new Exception();
             }
-             */
 
+            failure_msg.setText("Failed to connect");
             c.setUpNetworking(ip);
-            c.username = username;
-            c.ip = ip;
 
-            /*
-            if (ClientMain.online.contains(username)) {
-                throw new Exception();
-            } else {
-                ClientMain.online.add(username);
-                for (String s : ClientMain.online) {
-                    System.out.println(s);
-                }
-            }
-             */
-
-            // prepare the new scene
-            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("assignment7/HomeScreen.fxml"));
-            Parent root = loader.load();
-            HomeScreenController controller = loader.getController();
-            controller.c = c;
-            c.incoming_broadcast = controller.broadcast_window;
-
-            // PERSONALIZATION of UI
-            controller.welcome_msg.setText(c.username + "!");
-            controller.welcome_info.setText("Server IP: " + c.ip + " Welcome to the Lobby! To log out, close this window.");
-            controller.scrollpane.vvalueProperty().bind(controller.broadcast_window.heightProperty());
-
-            // Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("assignment7/HomeScreen.fxml"));
-            Stage s = (Stage)login_button.getScene().getWindow();
-            Scene scene = new Scene(root);
-            s.setScene(scene);
-
-            // System.out.println("new_user#" + c.username + " has joined the chat!\n");
-            ClientMain.toServer.writeObject("new_user#" + c.username + "#" + c.username + " has joined the chat!");
+            ClientMain.username = username;
+            ClientMain.password = password;
+            ClientMain.ip = ip;
+            ClientMain.toServer.writeObject("login_request#" + username + "#" + password);
             ClientMain.toServer.flush();
+
+            // c.setUpNetworking(ip);
         } catch (Exception e) {
             failure_msg.setVisible(true);
             username_field.clear();

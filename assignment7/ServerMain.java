@@ -1,3 +1,15 @@
+/*
+ * EE422C Project 7 submission by
+ * <Student1 Name> Kory Yang
+ * <Student1 EID> ky4794
+ * <Student1 5-digit Unique No.> 16185
+ * <Student2 Name> Sophia Jiang
+ * <Student2 EID> sj26792
+ * <Student2 5-digit Unique No.> 16185
+ * Slip days used: <1>
+ * Fall 2019
+ */
+
 package assignment7;
 
 import java.io.*;
@@ -9,19 +21,9 @@ import javafx.application.Platform;
 
 public class ServerMain extends Observable {
 
-	// public volatile static ObservableList<ChatClient> users = FXCollections.observableArrayList();
-	// public volatile static ObservableList<String> usernames = FXCollections.observableArrayList();
-
-	// public static ArrayList<String> online = new ArrayList<String>();
-	//Hashtable<String, ClientHandler> online = new Hashtable<>();
-	Hashtable<String, ClientObserver> online = new Hashtable<>();
-	// ArrayList<ChatRoom> chats = new ArrayList<ChatRoom>();
-	Hashtable<String, ChatRoom> chats = new Hashtable<>();
-
-	final Object lock1 = new Object();
-
-	public ArrayList<Observable> users;
-	public ArrayList<String> usernames;
+	static Hashtable<String, ClientObserver> online = new Hashtable<>();
+	static Hashtable<String, ChatRoom> chats = new Hashtable<>();
+	static Hashtable<String, String> pwd = new Hashtable<>();
 
 	public static void main(String[] args) {
 		try {
@@ -33,7 +35,6 @@ public class ServerMain extends Observable {
 	}
 
 	public ServerMain() {
-		usernames = new ArrayList<String>();
 	}
 
 	private void setUpNetworking() throws Exception {
@@ -47,24 +48,14 @@ public class ServerMain extends Observable {
 			this.addObserver(writer);
 
 			System.out.println("got a connection");
-			/*
-			for (String str : ChatServer.usernames) {
-				System.out.println(str);
-			}
-
-			 */
-
 		}
 	}
-	
-	public void remove(ClientMain user) {
-		Platform.runLater(() -> {
-			users.remove(user);
-			usernames.remove(user.username);
-		});
+
+	public void removeClientObserver() {
+
 	}
-	
-	
+
+
 	class ClientHandler implements Runnable {
 		ObjectInputStream serverInput;
 		ObjectOutputStream toServer;
@@ -86,50 +77,84 @@ public class ServerMain extends Observable {
 					System.out.println("server read " + message);
 
 					if (message.startsWith("new_user#")) {
-							String u = message.split("#")[1];
-							online.put(u, this.observer);
+						String u = message.split("#")[1];
+						online.put(u, this.observer);
+						setChanged();
+						notifyObservers("new_user_msg#" + message.split("#")[2]);
+
+						setChanged();
+						notifyObservers("private#" + message.split("#")[1] + "Welcome to the Lobby! Close the window to log out,or use @help to see a list of commands.");
 					} else if (message.startsWith("new_chat#")) {
-						// System.out.println(message);
-							String receive_list = message.split("#")[1];
-							String[] receivers = receive_list.split(" ");
-							ArrayList<ClientObserver> ppl = new ArrayList<ClientObserver>();
-							List<String> r = Arrays.asList(receivers);
-							Collections.sort(r);
-							String room_name = "";
-							for (String s : r) {
-								room_name += s;
-								room_name += " ";
-							}
+						String receive_list = message.split("#")[2];
+						String sender = message.split("#")[1];
+						String[] receivers = receive_list.split(" ");
+						ArrayList<ClientObserver> ppl = new ArrayList<ClientObserver>();
+						List<String> r = Arrays.asList(receivers);
+						Collections.sort(r);
+						String room_name = "";
+						for (String s : r) {
+							room_name += s;
+							room_name += " ";
+						}
 
-							int i = 0;
-							for (String s : receivers) {
-								System.out.println(s);
-								if (i == 0) {
-									//ppl.add(this.observer);
-									ppl.add(online.get(s));
-									System.out.println(this.observer);
-								} else {
-									System.out.println(online);
-									System.out.println(online.get(s));
-									ppl.add(online.get(s)); //ppl.add(online.get(s).observer);
-								}
-								i++;
+						boolean allUsersOnline = true;
+						for (String s : receivers) {
+							if (online.get(s) == null) {
+								setChanged();
+								notifyObservers("private#" + sender + "#" + "That user is not currently online\n");
+								allUsersOnline = false;
+								continue;
 							}
+							ppl.add(online.get(s));
+						}
 
-							ChatRoom chat_room = new ChatRoom(ppl, room_name);
-							chats.put(room_name, chat_room);
-							chat_room.initObservers(room_name);
-							// .out.println(chats);
+						if (allUsersOnline) {
+							if (chats.containsKey(room_name)) {
+								setChanged();
+								notifyObservers("private#" + sender + "#" + "That chat is already active\n");
+							} else {
+								ChatRoom chat_room = new ChatRoom(ppl, room_name, receivers);
+								chats.put(room_name, chat_room);
+							}
+						}
 					} else if (message.startsWith("chatroom#")) {
-
-							String id = message.split("#")[1];
-							chats.get(id).sendMessage(message.split("#")[2]);
-	
+						String id = message.split("#")[1];
+						chats.get(id).sendMessage(message.split("#")[2] + "#" + message.split("#")[3] + "#" + message.split("#")[4] + "#" + message.split("#")[5]);
 					} else if (message.startsWith("broadcast#")) {
-			
+						setChanged();
+						notifyObservers(message);
+					} else if (message.startsWith("close_chat#")) {
+						String id = message.split("#")[1];
+						chats.get(id).closeWindow(id);
+						chats.remove(id);
+					} else if (message.startsWith("remove_user#")) {
+
+						online.remove(message.split("#")[1]);
+						setChanged();
+						notifyObservers("user_left_msg#" + message.split("#")[1] + " has left the chat.");
+					} else if (message.startsWith("request_online#")) {
+						String online_users = "Users currently online: \n";
+						for (String u : online.keySet()) {
+							online_users += u + "\n";
+						}
+						setChanged();
+						notifyObservers("private#" + message.split("#")[1] + "#" + online_users);
+					} else if (message.startsWith("login_request#")) {
+						String username = message.split("#")[1];
+						String password = message.split("#")[2];
+
+						if (!pwd.containsKey(username)) {
+							System.out.println(username);
+							pwd.put(username, password);
 							setChanged();
-							notifyObservers(message);
-		
+							notifyObservers("login_success#" + username);
+						} else if (!pwd.get(username).equals(password) || (pwd.get(username).equals(password) && online.containsKey(username))) {
+							setChanged();
+							notifyObservers("wrong_password#" + username);
+						} else {
+							setChanged();
+							notifyObservers("login_success#" + username);
+						}
 					}
 				}
 			} catch (Exception e) {

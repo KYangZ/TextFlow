@@ -1,3 +1,14 @@
+/*
+ * EE422C Project 7 submission by
+ * <Student1 Name> Kory Yang
+ * <Student1 EID> ky4794
+ * <Student1 5-digit Unique No.> 16185
+ * <Student2 Name> Sophia Jiang
+ * <Student2 EID> sj26792
+ * <Student2 5-digit Unique No.> 16185
+ * Slip days used: <1>
+ * Fall 2019
+ */
 package assignment7;
 
 import javafx.event.ActionEvent;
@@ -12,6 +23,7 @@ import java.io.IOException;
 
 public class ChatController {
     public String chatName;
+    public String username;
 
     @FXML
     private Label chat_title;
@@ -36,14 +48,16 @@ public class ChatController {
     @FXML
     void send_msg(ActionEvent event) {
         if (!chat_textfield.getText().equals("")) {
-            try {
-                ClientMain.toServer.writeObject("chatroom#" + chatName + "#" + chat_textfield.getText());
-                ClientMain.toServer.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (!chat_textfield.getText().contains("#")) {
+                try {
+                    ClientMain.toServer.writeObject("chatroom#" + chatName + "#" + username + "#" + chat_textfield.getText() + "#" + ClientMain.user_color + "#" + ClientMain.text_size);
+                    ClientMain.toServer.flush();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                chat_textfield.setText("");
+                chat_textfield.requestFocus();
             }
-            chat_textfield.setText("");
-            chat_textfield.requestFocus();
         }
     }
     
