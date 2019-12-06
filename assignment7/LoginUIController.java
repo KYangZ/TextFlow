@@ -56,6 +56,11 @@ public class LoginUIController {
                 throw new Exception();
             }
 
+            if (username.contains(" ") || username.contains("#")) {
+                failure_msg.setText("Do not use spaces or #");
+                throw new Exception();
+            }
+
             if (password.equals("")) {
                 failure_msg.setText("Please enter a password\nYou will be registered if it is your first time logging in");
                 throw new Exception();

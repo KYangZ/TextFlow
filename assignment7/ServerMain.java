@@ -51,11 +51,6 @@ public class ServerMain extends Observable {
 		}
 	}
 
-	public void removeClientObserver() {
-
-	}
-
-
 	class ClientHandler implements Runnable {
 		ObjectInputStream serverInput;
 		ObjectOutputStream toServer;
@@ -81,13 +76,10 @@ public class ServerMain extends Observable {
 						online.put(u, this.observer);
 						setChanged();
 						notifyObservers("new_user_msg#" + message.split("#")[2]);
-
-						setChanged();
-						notifyObservers("private#" + message.split("#")[1] + "Welcome to the Lobby! Close the window to log out,or use @help to see a list of commands.");
 					} else if (message.startsWith("new_chat#")) {
 						String receive_list = message.split("#")[2];
 						String sender = message.split("#")[1];
-						String[] receivers = receive_list.split(" ");
+						String[] receivers = receive_list.split("\\s+");
 						ArrayList<ClientObserver> ppl = new ArrayList<ClientObserver>();
 						List<String> r = Arrays.asList(receivers);
 						Collections.sort(r);
@@ -101,7 +93,7 @@ public class ServerMain extends Observable {
 						for (String s : receivers) {
 							if (online.get(s) == null) {
 								setChanged();
-								notifyObservers("private#" + sender + "#" + "That user is not currently online\n");
+								notifyObservers("private#" + sender + "#" + s + " is not currently online\n");
 								allUsersOnline = false;
 								continue;
 							}
@@ -128,7 +120,7 @@ public class ServerMain extends Observable {
 						chats.get(id).closeWindow(id);
 						chats.remove(id);
 					} else if (message.startsWith("remove_user#")) {
-
+						deleteObserver(online.get(message.split("#")[1]));
 						online.remove(message.split("#")[1]);
 						setChanged();
 						notifyObservers("user_left_msg#" + message.split("#")[1] + " has left the chat.");

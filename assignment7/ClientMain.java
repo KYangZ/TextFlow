@@ -21,6 +21,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -59,6 +61,21 @@ public class ClientMain extends Application {
 	public LoginUIController controller;
 	public boolean connected = false;
 
+	static Media notif_sound;
+	static Media broadcast_sound;
+
+	static {
+		try {
+			notif_sound = new Media(ClientMain.class.getClassLoader().getResource("assignment7/private_notif.mp3").toURI().toString());
+			broadcast_sound = new Media(ClientMain.class.getClassLoader().getResource("assignment7/notif_sound.mp3").toURI().toString());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	 // = new Media(new File("src/assignment7/private_notif.mp3").toURI().toString());
+	// static Media step_sound_fx = new Media(new File("src/assignment5/sounds/step_sound_fx.mp3").toURI().toString());
+
 	public static void main(String[] args) {
 		launch(args);
 	}
@@ -73,7 +90,7 @@ public class ClientMain extends Application {
 		primaryStage.setOnCloseRequest(e->{
 			try {
 				toServer.writeObject("remove_user#" + username);
-			} catch (IOException ex) {
+			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
 			Platform.exit();
@@ -133,6 +150,7 @@ public class ClientMain extends Application {
 							s.setScene(scene);
 
 							Text t = new Text("Welcome to the lobby! Close this window to log out.\n" +
+									"To start a 1-1 or group chat, enter usernames in the text field separated by whitespace\n" +
 									"Type in @online to see a list of online users.\n" +
 									"Type in @help to see a list of commands.\n");
 							t.setFont(Font.font("System", 16));
@@ -172,6 +190,8 @@ public class ClientMain extends Application {
 							t.setFill(Color.web(finalMessage.split("#")[3]));
 							incoming_broadcast.getChildren().add(prefix);
 							incoming_broadcast.getChildren().add(t);
+							MediaPlayer m = new MediaPlayer(broadcast_sound);
+							m.setAutoPlay(true);
 						});
 					} else if (message.startsWith("private#")) {
 						if (message.split("#")[1].equals(username)) {
@@ -189,6 +209,7 @@ public class ClientMain extends Application {
 						ChatController chat_controller = loader.getController();
 						chat_controller.chatName = chatName;
 						chat_controller.username = username;
+						chat_controller.chat_title.setText("Chat");
 						Platform.runLater(() -> {
 							Scene scene = new Scene(root);
 							Stage stage = new Stage();
@@ -230,6 +251,8 @@ public class ClientMain extends Application {
 							t.setFill(c);
 							chat_windows.get(finalMessage.split("#")[0]).getChildren().add(prefix);
 							chat_windows.get(finalMessage.split("#")[0]).getChildren().add(t);
+							MediaPlayer m = new MediaPlayer(notif_sound);
+							m.setAutoPlay(true);
 						});
 					}
 				}

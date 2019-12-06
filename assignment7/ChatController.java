@@ -17,6 +17,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
 import java.io.IOException;
@@ -26,7 +29,7 @@ public class ChatController {
     public String username;
 
     @FXML
-    private Label chat_title;
+    public Label chat_title;
 
     @FXML
     private ScrollPane scrollpane;
@@ -47,17 +50,21 @@ public class ChatController {
 
     @FXML
     void send_msg(ActionEvent event) {
-        if (!chat_textfield.getText().equals("")) {
-            if (!chat_textfield.getText().contains("#")) {
-                try {
-                    ClientMain.toServer.writeObject("chatroom#" + chatName + "#" + username + "#" + chat_textfield.getText() + "#" + ClientMain.user_color + "#" + ClientMain.text_size);
-                    ClientMain.toServer.flush();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                chat_textfield.setText("");
-                chat_textfield.requestFocus();
+        String msg = chat_textfield.getText();
+        if (!msg.equals("") && !msg.contains("#")) {
+            try {
+                ClientMain.toServer.writeObject("chatroom#" + chatName + "#" + username + "#" + msg + "#" + ClientMain.user_color + "#" + ClientMain.text_size);
+                ClientMain.toServer.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+            chat_textfield.setText("");
+            chat_textfield.requestFocus();
+        } else {
+            Text t = new Text("Your messages cannot contain # or be null.\n");
+            t.setFont(Font.font("System", 16));
+            t.setFill(Color.web(ClientMain.user_color));
+            chat_window.getChildren().add(t);
         }
     }
     
